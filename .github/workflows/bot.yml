@@ -1,0 +1,18 @@
+name: Telegram Forwarder Bot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/10 * * * *"
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Python
+        run: |
+          pip install telethon
+      - name: Run Bot
+        run: python forward.py
+        
