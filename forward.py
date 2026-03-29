@@ -8,7 +8,7 @@ api_id = 21367965
 api_hash = "198b8590c4c2656e8bc4e2b721e71416"
 
 # ===== session string =====
-session_str = "1BJWap1sBuwNGiy9EYUCKi-XtpadrG5rEd0Ti8yUwMVS-_foR2Tki9wCvJzH9XRxZ3NYuE59tli5THrLQ78coscp6PNSmKRW2WAgSBrIstZSSvSnNU4dAHRTif3FwT7CUTCgZaTbBUujoUSKivwlC-Xv56Yd8q8KsEeGwu6GWqcbLuKhvuQrvR7qwI7hvY4Te0l-jblYEiTYUiQYy4lbwsnhvZI2Brf-OQVnttLjiJyPEDaAsT4kFWPint5Mf5PFtSTQGJyeQY0dLpBuemIwpXDHIFIncqr1dHwtreX6I1IJjbIHpN9V89hXixA6Q8cMtmr9cyvHyOHrXePBKdgVD_qAD2NT1yBI="
+session_str = "1BJWap1sBu3AD76nUYOEND59Hc565P-xQutIxbBYgZnjEiF2IomMU2HR5V56ALCeAcDluAqVIQtjnjyEkYsJwjZ5fknDSXOtw5T6HvndDYkIjvtZROYtCujPku7xtpRr8cvQG04IkwbaftrE-2h-iHxNsS3YYCP8Mf6w7WiAMOplQPve89yEM9mNcQ83JRK4e_FpIVXm_ySZGTpjrGdJifJuxMz_aq3dYlHIvGiJDc7_o-SEBUICRoOOU1Qyl45Wk6oaHk1QYKpA9fajuLcjPRDZ-zi9niyC7sxwHmcuM1rgq7FA9WDYhqr29n6BQq-EkV1eHCqn9cAGsXzLR6t-zm9m2oFsc92o="
 
 # ===== group IDs =====
 source_group = -1002781143657
