@@ -12,7 +12,7 @@ file_forward_to = -1002739446626
 otp_source = -1002781143657
 otp_forward_to = -1003099447280
 
-your_group_link = "https://t.me/otphostgroup"
+your_group_link = "https://t.me/NumberOtpGroup2"
 your_channel_link = "https://t.me/NumberByMahid"
 
 client = TelegramClient(StringSession(session_str), api_id, api_hash)
