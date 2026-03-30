@@ -18,26 +18,40 @@ your_channel_link = "https://t.me/NumberByMahid"
 
 client = TelegramClient(StringSession(session_str), api_id, api_hash)
 
-# 🔥 FIXED OTP EXTRACTOR (TEXT + BUTTON SUPPORT)
+# 🔥 ULTRA FIXED OTP EXTRACTOR (TEXT + BUTTON + CALLBACK DATA)
 def extract_otp(event):
     text = event.raw_text or ""
 
-    # 1st: normal text OTP
+    # 1️⃣ normal text OTP
     match = re.findall(r'\b\d{4,8}\b', text)
     if match:
         return match[0]
 
-    # 2nd: button OTP (IMPORTANT FIX)
+    # 2️⃣ button + callback OTP (REAL FIX)
     if event.message.buttons:
         for row in event.message.buttons:
             for btn in row:
-                if hasattr(btn, "text"):
-                    match2 = re.findall(r'\b\d{4,8}\b', btn.text)
-                    if match2:
-                        return match2[0]
+
+                # TEXT button
+                if hasattr(btn, "text") and btn.text:
+                    m = re.findall(r'\b\d{4,8}\b', btn.text)
+                    if m:
+                        return m[0]
+
+                # 🔥 CALLBACK DATA (IMPORTANT FIX FOR YOUR CASE)
+                if hasattr(btn, "data") and btn.data:
+                    try:
+                        data_str = btn.data.decode("utf-8")
+                    except:
+                        data_str = str(btn.data)
+
+                    m2 = re.findall(r'\b\d{4,8}\b', data_str)
+                    if m2:
+                        return m2[0]
 
     return "0000"
 
+# 📦 FILE FORWARD
 @client.on(events.NewMessage(chats=file_source))
 async def forward_file(event):
     if event.file:
@@ -47,6 +61,7 @@ async def forward_file(event):
             caption=event.raw_text or ""
         )
 
+# 🔐 OTP FORWARD (FIXED)
 @client.on(events.NewMessage(chats=otp_source))
 async def forward_otp(event):
     text = event.raw_text or ""
@@ -64,10 +79,10 @@ async def forward_otp(event):
         ]
     )
 
+# 🚀 MAIN RUNNER (FIXED SAFE VERSION)
 async def main():
     print("🚀 Bot starting...")
 
-    # ❌ FIX: client.start() removed (session already used)
     await client.connect()
 
     if not await client.is_user_authorized():
