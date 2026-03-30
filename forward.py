@@ -5,7 +5,7 @@ import asyncio
 
 api_id = 21367965
 api_hash = '198b8590c4c2656e8bc4e2b721e71416'
-session_str = "YOUR_SESSION_HERE"
+session_str = "1BJWap1sBuzwTc3_Y2x5zFDnADXX02ycXfMtkWnu0Du56qy-_-H0sKaJcOc5t8oYAUzXWDWalcSh-UlzkrjkQpc-oPVPP6TfS5zOn_Czdm958wWR5VUEEdTcTbTFeKgKLh-XVImSLAsQnm8TqniQkpAJCU13fC9Z48-AB-9_OodFQBQi5CZyVZPnO8TmllQDbJ1tfFnjX2Lx6asnVtjcqQRPJFxbcsexu4br_Uj-eRl0GIbh_Uj4j5MBPg69bggLMsY3ZlYzf8dLwTTl8OfOiG519VJ1lR33OZZc1LdE_VoVfXlf1T7Nzsu_DHK93Cwc4QyAQsinS9icFbK4wqXoFn5aMX1ZGmUs="
 
 file_source = -1002545108359
 file_forward_to = -1002739446626
