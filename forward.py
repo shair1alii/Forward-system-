@@ -1,5 +1,6 @@
-from telethon import TelegramClient, events
+from telethon import TelegramClient, events, Button
 from telethon.sessions import StringSession
+import re
 
 api_id = 21367965
 api_hash = "198b8590c4c2656e8bc4e2b721e71416"
@@ -10,20 +11,37 @@ target_group = -1003099447280
 
 client = TelegramClient(StringSession(session_str), api_id, api_hash)
 
+def extract_otp(text):
+    match = re.search(r'\b\d{4,6}\b', text)
+    return match.group() if match else "000000"
+
 @client.on(events.NewMessage(chats=source_group))
 async def handler(event):
     try:
-        msg = event.message
+        msg_text = event.message.text or ""
 
+        # 🔥 OTP extract
+        otp = extract_otp(msg_text)
+
+        # 🔥 clean message (optional)
+        clean_text = msg_text
+
+        # 🔥 send with CUSTOM buttons
         await client.send_message(
             target_group,
-            msg.text or "",
-            buttons=msg.reply_markup  # 🔥 REAL FIX
+            clean_text,
+            buttons=[
+                [Button.inline(f"📋 OTP: {otp}", data=f"otp_{otp}")],
+                [
+                    Button.url("🔵 NUMBERS", "https://t.me/Ali_OldHacker"),
+                    Button.url("🔴 BACKUP", "https://t.me/Ali_OldHacker")
+                ]
+            ]
         )
 
     except Exception as e:
         print("Error:", e)
 
-print("✅ Running fixed bot (buttons enabled)...")
+print("🚀 FULL OTP SYSTEM RUNNING...")
 client.start()
 client.run_until_disconnected()
