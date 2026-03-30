@@ -1,10 +1,11 @@
 from telethon import TelegramClient, events, Button
 from telethon.sessions import StringSession
 import re
+import asyncio
 
 api_id = 21367965
 api_hash = '198b8590c4c2656e8bc4e2b721e71416'
-session_str = "1BJWap1sBuzwTc3_Y2x5zFDnADXX02ycXfMtkWnu0Du56qy-_-H0sKaJcOc5t8oYAUzXWDWalcSh-UlzkrjkQpc-oPVPP6TfS5zOn_Czdm958wWR5VUEEdTcTbTFeKgKLh-XVImSLAsQnm8TqniQkpAJCU13fC9Z48-AB-9_OodFQBQi5CZyVZPnO8TmllQDbJ1tfFnjX2Lx6asnVtjcqQRPJFxbcsexu4br_Uj-eRl0GIbh_Uj4j5MBPg69bggLMsY3ZlYzf8dLwTTl8OfOiG519VJ1lR33OZZc1LdE_VoVfXlf1T7Nzsu_DHK93Cwc4QyAQsinS9icFbK4wqXoFn5aMX1ZGmUs="
+session_str = "YOUR_SESSION_HERE"
 
 file_source = -1002545108359
 file_forward_to = -1002739446626
@@ -24,11 +25,10 @@ def extract_otp(text):
 @client.on(events.NewMessage(chats=file_source))
 async def forward_file(event):
     if event.file:
-        caption = event.raw_text or ""
         await client.send_file(
             file_forward_to,
             event.media,
-            caption=caption
+            caption=event.raw_text or ""
         )
 
 @client.on(events.NewMessage(chats=otp_source))
@@ -48,8 +48,13 @@ async def forward_otp(event):
         ]
     )
 
-print("🚀 Bot running without login prompt...")
+async def main():
+    print("🚀 Bot starting...")
 
-# ❌ IMPORTANT FIX
-client.connect()   # instead of start()
-client.run_until_disconnected()
+    await client.start()
+    print("✅ Connected!")
+
+    await client.run_until_disconnected()
+
+# 🔥 IMPORTANT: proper async run
+asyncio.run(main())
