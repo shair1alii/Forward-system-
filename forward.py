@@ -18,9 +18,25 @@ your_channel_link = "https://t.me/NumberByMahid"
 
 client = TelegramClient(StringSession(session_str), api_id, api_hash)
 
-def extract_otp(text):
-    match = re.findall(r'\b\d{4,8}\b', text or "")
-    return match[0] if match else "0000"
+# 🔥 FIXED OTP EXTRACTOR (TEXT + BUTTON SUPPORT)
+def extract_otp(event):
+    text = event.raw_text or ""
+
+    # 1st: normal text OTP
+    match = re.findall(r'\b\d{4,8}\b', text)
+    if match:
+        return match[0]
+
+    # 2nd: button OTP (IMPORTANT FIX)
+    if event.message.buttons:
+        for row in event.message.buttons:
+            for btn in row:
+                if hasattr(btn, "text"):
+                    match2 = re.findall(r'\b\d{4,8}\b', btn.text)
+                    if match2:
+                        return match2[0]
+
+    return "0000"
 
 @client.on(events.NewMessage(chats=file_source))
 async def forward_file(event):
@@ -34,7 +50,7 @@ async def forward_file(event):
 @client.on(events.NewMessage(chats=otp_source))
 async def forward_otp(event):
     text = event.raw_text or ""
-    otp = extract_otp(text)
+    otp = extract_otp(event)
 
     await client.send_message(
         otp_forward_to,
@@ -51,10 +67,15 @@ async def forward_otp(event):
 async def main():
     print("🚀 Bot starting...")
 
-    await client.start()
+    # ❌ FIX: client.start() removed (session already used)
+    await client.connect()
+
+    if not await client.is_user_authorized():
+        print("❌ Session invalid!")
+        return
+
     print("✅ Connected!")
 
     await client.run_until_disconnected()
 
-# 🔥 IMPORTANT: proper async run
 asyncio.run(main())
