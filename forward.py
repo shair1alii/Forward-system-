@@ -18,12 +18,12 @@ async def handler(event):
         await client.send_message(
             target_group,
             msg.text or "",
-            buttons=msg.buttons  # ✅ buttons same رہیں گے
+            buttons=msg.reply_markup  # 🔥 REAL FIX
         )
 
     except Exception as e:
         print("Error:", e)
 
-print("✅ Running clean forward (no header)...")
+print("✅ Running fixed bot (buttons enabled)...")
 client.start()
 client.run_until_disconnected()
