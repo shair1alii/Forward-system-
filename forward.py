@@ -12,17 +12,23 @@ otp_forward_to = -1003099447280
 
 client = TelegramClient(StringSession(session_str), api_id, api_hash)
 
-# 🔥 extract OTP from button text like 792-663
-def extract_otp_from_button(msg):
-    if not msg.buttons:
-        return None
+# 🔥 OTP extractor (best effort)
+def extract_otp(msg):
+    text = msg.message or ""
 
-    for row in msg.buttons:
-        for btn in row:
-            if hasattr(btn, "text"):
-                txt = btn.text.replace("-", "")
-                if txt.isdigit() and 4 <= len(txt) <= 8:
-                    return btn.text  # return original format
+    # 1️⃣ text check
+    m = re.findall(r'\b\d{4,8}\b', text)
+    if m:
+        return m[0]
+
+    # 2️⃣ button text check
+    if msg.buttons:
+        for row in msg.buttons:
+            for btn in row:
+                if hasattr(btn, "text"):
+                    t = btn.text.replace("-", "")
+                    if t.isdigit() and 4 <= len(t) <= 8:
+                        return btn.text
 
     return None
 
@@ -30,20 +36,25 @@ def extract_otp_from_button(msg):
 async def handler(event):
     msg = event.message
 
-    otp_text = extract_otp_from_button(msg)
+    otp = extract_otp(msg)
 
-    buttons = None
-    if otp_text:
-        buttons = [[Button.inline(f"📋 {otp_text}", data=f"otp_{otp_text}")]]
+    # ✅ اگر OTP مل گیا → clean send (no header)
+    if otp:
+        await client.send_message(
+            otp_forward_to,
+            f"{msg.message}\n\n🔐 OTP: {otp}",
+            buttons=[[Button.inline(f"📋 {otp}", data=f"otp_{otp}")]]
+        )
 
-    await client.send_message(
-        otp_forward_to,
-        msg.message or "",
-        buttons=buttons
-    )
+    # ❌ اگر OTP نہ ملا → full forward (button working)
+    else:
+        await client.forward_messages(
+            otp_forward_to,
+            msg
+        )
 
 async def main():
-    print("🚀 Hybrid bot running...")
+    print("🚀 FINAL AUTO SYSTEM RUNNING...")
 
     await client.connect()
 
