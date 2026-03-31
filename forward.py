@@ -11,54 +11,52 @@ otp_forward_to = -1003099447280
 
 client = TelegramClient(StringSession(session_str), api_id, api_hash)
 
-# 🔥 Extract OTP from text + buttons
-def extract_otp(msg):
-    text = msg.message or ""
 
-    # 1️⃣ text se digits
-    numbers = re.findall(r'\b\d{1,8}\b', text)
+# 🔥 extract ONLY button OTP (priority)
+def extract_button_otp(msg):
+    if not msg.buttons:
+        return None
 
-    otp_from_text = numbers[0] if numbers else ""
+    for row in msg.buttons:
+        for btn in row:
+            if hasattr(btn, "text"):
+                t = btn.text.strip()
 
-    # 2️⃣ buttons se numbers/words collect
-    button_parts = []
+                # only numeric OTP (1-10 digits)
+                if re.fullmatch(r"\d{1,10}", t):
+                    return t
 
-    if msg.buttons:
-        for row in msg.buttons:
-            for btn in row:
-                if hasattr(btn, "text"):
-                    clean = btn.text.strip()
+    return None
 
-                    # only take digits or small words (like 1-10 or code parts)
-                    if re.fullmatch(r'[0-9]+', clean):
-                        button_parts.append(clean)
-                    elif len(clean) <= 10:
-                        button_parts.append(clean)
 
-    # 3️⃣ combine all parts
-    final_otp = otp_from_text + "".join(button_parts)
-
-    # optional: keep only digits (clean OTP)
-    final_otp_digits = re.sub(r'\D', '', final_otp)
-
-    return final_otp_digits
+# 🔥 fallback: text se OTP
+def extract_text_otp(text):
+    m = re.findall(r"\b\d{4,10}\b", text or "")
+    return m[0] if m else None
 
 
 @client.on(events.NewMessage(chats=otp_source))
 async def handler(event):
     msg = event.message
 
-    otp = extract_otp(msg)
+    # 1️⃣ button OTP first priority
+    otp = extract_button_otp(msg)
 
+    # 2️⃣ fallback text OTP
+    if not otp:
+        otp = extract_text_otp(msg.message)
+
+    # 3️⃣ send clean format
     if otp:
         await client.send_message(
             otp_forward_to,
-            msg.message or "",
+            f"OTP: {otp}",
             buttons=[
-                [Button.inline(f"📋 OTP: {otp}", data=f"otp_{otp}")]
+                [Button.inline(f"📋 Copy OTP ({otp})", data=f"copy_{otp}")]
             ]
         )
     else:
+        # fallback raw message
         await client.send_message(
             otp_forward_to,
             msg.message or ""
@@ -66,7 +64,7 @@ async def handler(event):
 
 
 async def main():
-    print("🚀 BOT RUNNING...")
+    print("🚀 OTP BOT RUNNING...")
     await client.start()
     print("✅ Connected")
     await client.run_until_disconnected()
